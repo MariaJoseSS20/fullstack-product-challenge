@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-2xl mx-auto px-4">
-      <h1 class="text-3xl font-bold text-gray-900 mb-8">Gestión de Productos</h1>
+      <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Gestión de Productos</h1>
 
       <form @submit.prevent="handleSubmit" class="bg-white p-6 rounded-lg shadow-sm mb-8">
         <div class="space-y-4">
@@ -13,14 +13,14 @@
           </div>
 
           <div class="flex gap-4">
-            <div class="w-2/3">
+            <div class="w-1/2">
               <label htmlFor="price" className="block text-sm font-medium text-gray-700">Precio</label>
               <input type="text" v-model="newProduct.price" placeholder="Precio"
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required />
             </div>
 
-            <div class="w-1/3">
+            <div class="w-1/2">
               <label htmlFor="stock" className="block text-sm font-medium text-gray-700">Stock</label>
               <input type="number" v-model="newProduct.stock" placeholder="Stock"
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
