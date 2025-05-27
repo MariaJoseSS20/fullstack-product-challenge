@@ -55,10 +55,20 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+public function update(Request $request, $id)
+{
+    $product = Product::findOrFail($id);
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'price' => 'required',
+        'stock' => 'required|integer|min:1',
+    ]);
+
+    $product->update($validated);
+
+    return response()->json($product);
+}
 
     /**
      * Remove the specified resource from storage.

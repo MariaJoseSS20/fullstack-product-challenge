@@ -97,8 +97,7 @@ export default {
       try {
         const rawPrice = this.newProduct.price.trim()
 
-        // Permitir solo números como "20000", "20.000", "1.234.567"
-        const validFormat = /^(\d{1,3})(\.\d{3})*$|^\d+$/
+        const validFormat = /^(\d{1,3})(\.\d{3})*$|^\d+$/;
 
         if (!validFormat.test(rawPrice)) {
           alert("El formato del precio no es válido. Usa solo números o separadores de miles con punto (ej: 20.000)");
@@ -111,13 +110,43 @@ export default {
           alert("El precio ingresado no es válido");
           return;
         }
-        await axios.post('http://localhost:8000/api/products', this.newProduct)
-        this.newProduct = { name: '', price: '', stock: '' }
-        this.fetchProducts()
+
+        const existingProduct = this.products.find(
+          (p) => p.name.trim().toLowerCase() === this.newProduct.name.trim().toLowerCase()
+        );
+
+        if (existingProduct) {
+          const confirmUpdate = window.confirm(
+            `Ya existe un producto llamado "${existingProduct.name}". ¿Deseas actualizarlo?`
+          );
+
+          if (!confirmUpdate) {
+            return; // Cancelar si el usuario no quiere actualizar
+          }
+
+          // Actualizar el producto existente con PUT
+          await axios.put(`http://localhost:8000/api/products/${existingProduct.id}`, {
+            ...this.newProduct,
+            price: cleanPrice
+          });
+
+        } else {
+          // Crear nuevo producto si no existe
+          await axios.post('http://localhost:8000/api/products', {
+            ...this.newProduct,
+            price: cleanPrice
+          });
+        }
+
+        // Limpiar formulario y refrescar lista
+        this.newProduct = { name: '', price: '', stock: '' };
+        this.fetchProducts();
+
       } catch (error) {
-        console.error('Error creating product:', error)
+        console.error('Error al guardar el producto:', error);
       }
     },
+
     async handleDelete(id) {
       try {
         const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este producto?");
