@@ -34,19 +34,34 @@
         </div>
       </form>
 
-      <div class="bg-white rounded-lg shadow-sm">
-        <ul class="divide-y divide-gray-200">
-          <li v-for="product in products" :key="product.id" class="p-6 flex items-center justify-between">
-            <div>
-              <h3 class="text-lg font-medium text-gray-900">{{ product.name }}</h3>
-              <p class="text-sm text-gray-500">{{ formatPrice(product.price) }}</p>
-              <p class="text-sm text-gray-500">{{ product.stock }}</p>
+      <div class="bg-white rounded-lg shadow-sm max-w-4xl mx-auto">
 
+        <div class="flex justify-between px-4 py-4 border-b border-gray-200 font-semibold text-gray-900 text-center">
+          <div class="w-1/4">Producto</div>
+          <div class="w-1/4">Precio</div>
+          <div class="w-1/4">Stock</div>
+          <div class="w-1/4">Acción</div>
+        </div>
+
+        <ul class="divide-y divide-gray-200">
+          <li v-for="product in products" :key="product.id" class="p-6">
+            <div class="flex justify-between items-center text-center">
+              <div class="w-1/4 pr-4">
+                {{ product.name }}
+              </div>
+              <div class="w-1/4">
+                {{ formatPrice(product.price) }}
+              </div>
+              <div class="w-1/4">
+                {{ product.stock }}
+              </div>
+              <div class="w-1/4 pl-4">
+                <button @click="handleDelete(product.id)"
+                  class="mt-2 text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                  Eliminar
+                </button>
+              </div>
             </div>
-            <button @click="handleDelete(product.id)"
-              class="text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
-              Eliminar
-            </button>
           </li>
         </ul>
       </div>
@@ -105,6 +120,10 @@ export default {
     },
     async handleDelete(id) {
       try {
+        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este producto?");
+        if (!confirmDelete) {
+          return; // Si el usuario cancela, no se hace nada
+        }
         await axios.delete(`http://localhost:8000/api/products/${id}`)
         this.fetchProducts()
       } catch (error) {
